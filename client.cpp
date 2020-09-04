@@ -24,7 +24,7 @@ int N=4,vm_limit=3;
 mutex mtx;
 thread th[11];
 
-char *ippool[10]={"127.0.0.1","192.168.122.181","192.168.122.182","192.168.122.183","192.168.122.184","192.168.122.185"};
+char *ippool[10]={"127.0.0.1","192.168.122.11","192.168.122.12","192.168.122.13","192.168.122.14","192.168.122.15"};
 int sleeptimer;
 void foo(char * serverIp)
 {
@@ -55,7 +55,7 @@ void foo(char * serverIp)
     gettimeofday(&start1, NULL);
     while(1)
     {
-        if((serverIp[14]-48)>N)
+        if((serverIp[13]-48)>N)
         return;
         usleep(sleeptimer);
         mtx.lock();

@@ -11,7 +11,7 @@
 #define PORT 8100
 #define SA struct sockaddr 
 
-int vm_limit=3;
+int vm_limit=3,active=1;
 
 double avg_cpu_util(virConnectPtr conn)
 {
@@ -57,6 +57,7 @@ void increase_vm(virConnectPtr conn)
     str[2]=num_of_dom+48+1;
     dom=virDomainLookupByName(conn,str);
     virDomainCreate(dom);
+    printf("Increased vm\n");
 
 }
 
@@ -71,6 +72,7 @@ void decrease_vm(virConnectPtr conn)
     str[2]=num_of_dom+48;
     dom=virDomainLookupByName(conn,str);
     virDomainShutdown(dom);
+    printf("Decreased vm\n");
 }
 
 // Function designed for chat between client and server. 
@@ -96,10 +98,14 @@ void func(int sockfd)
 		// printf("From client: %s\nTo client : ", buff); 
 		bzero(buff, MAX); 
         avg_util=avg_cpu_util(conn);
+        if(avg_util>100)
+        avg_util=100;
+        printf("Average CPU util: %.2lf\n",avg_util);
+
         if(avg_util>90)
         {
             increase_vm(conn);
-            sleep(2);
+            sleep(10);
             buff[0]='+';
             buff[1]='1';
             buff[2]='\n';
@@ -124,7 +130,7 @@ void func(int sockfd)
         {
             read(sockfd, buff, sizeof(buff));
             decrease_vm(conn);
-            sleep(2);
+            sleep(6);
 
         }
         else read(sockfd, buff, sizeof(buff));
